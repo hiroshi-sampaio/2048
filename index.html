@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8"/>
+	<title>Title</title>
+	<link rel="stylesheet" href="./index.css" />
+</head>
+<body>
+	<div class="board">
+		<div class="row">
+			<div class="box square n1"></div>
+			<div class="box square n2"></div>
+			<div class="box square n4"></div>
+			<div class="box square n8"></div>
+		</div>
+		<div class="row">
+			<div class="box square n16"></div>
+			<div class="box square n32"></div>
+			<div class="box square n64"></div>
+			<div class="box square n128"></div>
+		</div>
+		<div class="row">
+			<div class="box square n256"></div>
+			<div class="box square n512"></div>
+			<div class="box square n1024"></div>
+			<div class="box square n2048"></div>
+		</div>
+		<div class="row">
+			<div class="box square n4096"></div>
+			<div class="box square"></div>
+			<div class="box square"></div>
+			<div class="box square"></div>
+		</div>
+	</div>
+	<div id="text"></div>
+	<script type="text/javascript" src="./index.js"></script>
+	<script>
+		var tds = document.getElementsByClassName('square');
+		var str = "";
+		
+		for (var i=0; i<tds.length; i++) {
+			str += "(" + tds[i].offsetLeft + ", " + tds[i].offsetTop + ")<br>";
+		}
+	
+		document.getElementById("text").innerHTML = str;
+	</script>
+</body>
+</html>

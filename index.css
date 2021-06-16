@@ -1,0 +1,52 @@
+.board {
+	border-radius:5%;
+	width:480px;
+	height:480px;
+	background: #050505;
+	padding:10px;
+}
+
+.row {
+	clear:both;
+}
+
+.box {
+	width:100px;
+	height:100px;
+	margin:10px;
+	border-radius:5%;
+	text-align:center;
+	line-height:100px;
+	vertical-align:middle;
+}
+
+.square {
+	float:left;
+	background: #202020;
+}
+
+.shown {
+	position:absolute;
+	background:red;
+	text-align:center;
+}
+
+.n1:after { content: '1'; }
+.n2:after { content: '2'; }
+.n4:after { content: '4'; }
+.n8:after { content: '8'; }
+.n16:after { content: '16'; }
+.n32:after { content: '32'; }
+.n64:after { content: '64'; }
+.n128:after { content: '128'; }
+.n256:after { content: '256'; }
+.n512:after { content: '512'; }
+.n1024:after { content: '1024'; }
+.n2048:after { content: '2048'; }
+.n4096:after { content: '4096'; }
+
+.n1 {
+	background-color: blue;
+	color: white;
+	font-size: 1em;
+}
