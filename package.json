@@ -1,0 +1,9 @@
+{
+  "name": "2048",
+  "scripts": {
+    "build": "flow-remove-types src/ -d target/"
+  },
+  "dependencies": {
+    "flow-remove-types": "latest"
+  }
+}
