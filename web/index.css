@@ -13,7 +13,12 @@ html, body {
 
 .piece {
 	position: absolute;
-	margin: 10px;
-	border-radius: 5%;
-	border: 10px green;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.piece > * {
+	width: 75%;
+	height: 75%;
 }

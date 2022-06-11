@@ -154,13 +154,7 @@ class App {
         }
 
         for (let box of this.getOnBoardBoxes()) {
-            const pieceDiv = document.createElement<HTMLDivElement>("div");
-            pieceDiv.className = PIECE_CLASS_NAME;
-            pieceDiv.style.width = (100 / this.columns) + "%";
-            pieceDiv.style.height = (100 / this.lines) + "%";
-            pieceDiv.style.top = (100 / this.lines * box.coord.line) + "%";
-            pieceDiv.style.left = (100 / this.columns * box.coord.column) + "%";
-
+            const numberDiv = document.createElement<HTMLDivElement>("div");
 
             const numberAsString = box.value.toString();
 
@@ -169,9 +163,17 @@ class App {
                 img.src = char + ".svg";
                 img.style.width = (100 / numberAsString.length) + "%";
                 img.style.height = "100%";
-                pieceDiv.appendChild(img);
+                numberDiv.appendChild(img);
             }
 
+
+            const pieceDiv = document.createElement<HTMLDivElement>("div");
+            pieceDiv.appendChild(numberDiv);
+            pieceDiv.className = PIECE_CLASS_NAME;
+            pieceDiv.style.width = (100 / this.columns) + "%";
+            pieceDiv.style.height = (100 / this.lines) + "%";
+            pieceDiv.style.top = (100 / this.lines * box.coord.line) + "%";
+            pieceDiv.style.left = (100 / this.columns * box.coord.column) + "%";
             this.screen.boardElement.appendChild(pieceDiv);
         }
     }
