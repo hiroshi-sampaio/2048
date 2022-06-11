@@ -21,4 +21,6 @@ html, body {
 .piece > * {
 	width: 75%;
 	height: 75%;
+	border: 1.5vh solid;
+	border-radius: 10%;
 }
