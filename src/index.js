@@ -4,89 +4,46 @@
 const BOARD_CLASS_NAME = "board";
 const PIECE_CLASS_NAME = "piece";
 
-class Movement {
+interface GameAction {
 
-    constructor(box: Box) {
-        this.box = box;
-    }
+    slideUp();
+
+    slideDown();
+
+    slideLeft();
+
+    slideRight();
 }
 
-class SlideMovement extends Movement {
-
-    constructor(box: Box, to: Coord) {
-        super(box);
-        this.to = to;
-    }
-}
-
-class MergeMovement extends SlideMovement {
-
-    constructor(box: Box, to: Coord, boxToMerge: Box) {
-        super(box, to);
-        this.boxToMerge = boxToMerge;
-    }
-}
-
-class Coord {
-    constructor(line: number = 0, column: number = 0) {
-        this.line = line;
-        this.column = column;
-    }
-}
-
-class Box {
-    constructor(coord: Coord = null, onBoard: boolean = false, value: number = 2048) {
-        this.coord = coord;
-        this.onBoard = onBoard;
-        this.value = value;
-    }
-}
-
-
-class App {
-    constructor(lines: number, columns: number, screen: Screen, boxes: Box[] = [], coords: Coord[] = []) {
+class Game implements GameAction {
+    constructor(lines: number, columns: number, screen: Screen) {
         this.lines = lines;
         this.columns = columns;
         this.screen = screen;
-        this.boxes = boxes;
-        this.coords = coords;
-    }
+        this.squareToNumber = Array<number>(lines * columns);
 
-    init() {
-        for (let line = 0; line < this.lines; line++) {
-            for (let column = 0; column < this.columns; column++) {
-                this.coords.push(new Coord(line, column));
-            }
-        }
-        for (let i = 0; i < this.lines * this.columns; i++) {
-            this.boxes.push(new Box());
+        for (let i = 0; i < this.squareToNumber.length; i++) {
+            this.squareToNumber[i] = NaN;
         }
         window.onkeydown = this.handleInput.bind(this);
         this.drawIt();
     }
 
-    getEmptyCoords(): Coord[] {
-        const usedCoords = this.boxes.filter(box => box.onBoard).map(box => box.coord);
-        console.trace("usedCoords", usedCoords);
-        console.trace("this.coords", this.coords);
-        const unusedCoords = this.coords.reduce((previousValue, currentValue: Coord) => {
-            if (usedCoords.findIndex(coord => coord === currentValue) === -1) {
-                previousValue.push(currentValue);
-            }
+    getEmptySquares(): number[] {
+        console.trace("this.squareToNumber", this.squareToNumber);
+        return this.squareToNumber.reduce((previousValue: number[], currentValue: number, currentIndex: number) => {
+            if (!currentValue) previousValue.push(currentIndex);
             return previousValue;
-        }, Array.of<Coord>());
-        console.trace("unusedCoords", unusedCoords);
-        return unusedCoords;
+        }, []);
     }
 
     giveNumber(): boolean {
-        const box = this.boxes.find((value: Box) => value.onBoard === false);
-        if (box) {
-            const emptyCoords = this.getEmptyCoords();
-            box.coord = emptyCoords[Math.floor(Math.random() * emptyCoords.length)];
-            box.onBoard = true;
-            box.value = Math.pow(2, Math.floor(Math.random() * 10));
-            console.trace("Given number: ", box);
+        const emptySquares = this.getEmptySquares();
+        console.trace("emptySquares", emptySquares);
+        if (emptySquares.length > 0) {
+            const index = emptySquares[Math.floor(Math.random() * emptySquares.length)];
+            this.squareToNumber[index] = Math.pow(2, Math.floor(Math.random() * 10));
+            console.trace("Given number: ", this.squareToNumber[index]);
             return true;
         } else {
             console.trace("Game over");
@@ -94,34 +51,8 @@ class App {
         }
     }
 
-    getOnBoardBoxes(): Box[] {
-        return this.boxes.filter(box => box.onBoard);
-    }
-
-    getBoxesGroupedByColumn(): Object {
-        return this.getOnBoardBoxes().reduce((result, currentValue: Box) => {
-            (result[currentValue.coord.column] = result[currentValue.coord.column] || []).push(currentValue);
-            return result;
-        }, {});
-    }
-
-    getBoxesGroupedByLine(): Object {
-        return this.getOnBoardBoxes().reduce((result, currentValue: Box) => {
-            (result[currentValue.coord.line] = result[currentValue.coord.line] || []).push(currentValue);
-            return result;
-        }, {});
-    }
-
     slideUp() {
-        const boxesGroupedByColumn = this.getBoxesGroupedByColumn();
 
-        for (let column in boxesGroupedByColumn) {
-            const boxes: Box[] = boxesGroupedByColumn[column];
-            boxes.sort((box1, box2) => box1.coord.line - box2.coord.line);
-            console.trace(column, boxes);
-        }
-
-        console.log("boxesGroupedByColumn", boxesGroupedByColumn);
     }
 
     handleInput(keyboardEvent: KeyboardEvent) {
@@ -153,10 +84,12 @@ class App {
             this.screen.boardElement.firstChild.remove();
         }
 
-        for (let box of this.getOnBoardBoxes()) {
+        for (let i = 0; i < this.squareToNumber.length; i++) {
+            if (!this.squareToNumber[i]) continue;
+
             const numberDiv = document.createElement<HTMLDivElement>("div");
 
-            const numberAsString = box.value.toString();
+            const numberAsString = this.squareToNumber[i].toString();
 
             for (let char of numberAsString) {
                 const img = document.createElement<HTMLImageElement>("img");
@@ -172,8 +105,8 @@ class App {
             pieceDiv.className = PIECE_CLASS_NAME;
             pieceDiv.style.width = (100 / this.columns) + "%";
             pieceDiv.style.height = (100 / this.lines) + "%";
-            pieceDiv.style.top = (100 / this.lines * box.coord.line) + "%";
-            pieceDiv.style.left = (100 / this.columns * box.coord.column) + "%";
+            pieceDiv.style.top = (100 / this.lines * Math.floor(i / this.lines)) + "%";
+            pieceDiv.style.left = (100 / this.columns * (i % this.lines)) + "%";
             this.screen.boardElement.appendChild(pieceDiv);
         }
     }
@@ -187,7 +120,6 @@ class Screen {
 }
 
 function game(lines: number, columns: number, boardElement: Element) {
-    let app = new App(lines, columns, new Screen(boardElement));
-    app.init();
+    let app = new Game(lines, columns, new Screen(boardElement));
 }
 
