@@ -1,22 +1,17 @@
-// @flow
-'use strict'
+import {GameAction} from "./gameAction";
+import {Banana} from "./banana";
 
 const BOARD_CLASS_NAME = "board";
 const PIECE_CLASS_NAME = "piece";
 
-interface GameAction {
+export class Game implements GameAction {
 
-    slideUp();
+    private readonly lines: number;
+    private readonly columns: number;
+    private screen: Banana;
+    private readonly squareToNumber: number[];
 
-    slideDown();
-
-    slideLeft();
-
-    slideRight();
-}
-
-class Game implements GameAction {
-    constructor(lines: number, columns: number, screen: Screen) {
+    constructor(lines: number, columns: number, screen: Banana) {
         this.lines = lines;
         this.columns = columns;
         this.screen = screen;
@@ -51,8 +46,8 @@ class Game implements GameAction {
         }
     }
 
-    slideUp() {
-
+    slideUp(): [] {
+        return [];
     }
 
     handleInput(keyboardEvent: KeyboardEvent) {
@@ -64,15 +59,12 @@ class Game implements GameAction {
             this.slideUp();
             this.giveNumber();
         } else if (key === "a" || key === "A" || key === "j" || key === "J" || key === "ArrowLeft" || key === "4") {
-            moves = slideLeft();
+            moves = this.slideLeft();
         } else if (key === "s" || key === "S" || key === "k" || key === "K" || key === "ArrowDown" || key === "2") {
-            moves = slideDown();
+            moves = this.slideDown();
         } else if (key === "d" || key === "D" || key === "l" || key === "L" || key === "ArrowRight" || key === "6") {
-            moves = slideRight();
+            moves = this.slideRight();
         } else if (key === " ") {
-            for (let box of this.boxes) {
-                box.onBoard = false;
-            }
         }
         this.drawIt();
     }
@@ -84,42 +76,43 @@ class Game implements GameAction {
             this.screen.boardElement.firstChild.remove();
         }
 
-        for (let i = 0; i < this.squareToNumber.length; i++) {
-            if (!this.squareToNumber[i]) continue;
+        for (let index = 0; index < this.squareToNumber.length; index++) {
+            if (!this.squareToNumber[index]) continue;
 
-            const numberDiv = document.createElement<HTMLDivElement>("div");
+            const numberDiv: HTMLDivElement = document.createElement("div");
 
-            const numberAsString = this.squareToNumber[i].toString();
+            const numberAsString = this.squareToNumber[index].toString();
 
-            for (let char of numberAsString) {
-                const img = document.createElement<HTMLImageElement>("img");
-                img.src = char + ".svg";
+            for (let c = 0; c < numberAsString.length; c++) {
+                const img: HTMLImageElement = document.createElement("img");
+                img.src = numberAsString.charAt(c) + ".svg";
                 img.style.width = (100 / numberAsString.length) + "%";
                 img.style.height = "100%";
                 numberDiv.appendChild(img);
             }
 
 
-            const pieceDiv = document.createElement<HTMLDivElement>("div");
+            const pieceDiv: HTMLDivElement = document.createElement("div");
             pieceDiv.appendChild(numberDiv);
             pieceDiv.className = PIECE_CLASS_NAME;
             pieceDiv.style.width = (100 / this.columns) + "%";
             pieceDiv.style.height = (100 / this.lines) + "%";
-            pieceDiv.style.top = (100 / this.lines * Math.floor(i / this.lines)) + "%";
-            pieceDiv.style.left = (100 / this.columns * (i % this.lines)) + "%";
+            pieceDiv.style.top = (100 / this.lines * Math.floor(index / this.lines)) + "%";
+            pieceDiv.style.left = (100 / this.columns * (index % this.lines)) + "%";
             this.screen.boardElement.appendChild(pieceDiv);
         }
     }
-}
 
-class Screen {
-
-    constructor(boardElement: Element) {
-        this.boardElement = boardElement;
+    slideDown(): [] {
+        return [];
     }
-}
 
-function game(lines: number, columns: number, boardElement: Element) {
-    let app = new Game(lines, columns, new Screen(boardElement));
-}
+    slideLeft(): [] {
+        return [];
+    }
 
+    slideRight(): [] {
+        return [];
+    }
+
+}

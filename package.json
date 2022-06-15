@@ -1,12 +1,25 @@
 {
   "name": "2048",
+  "version": "1.0.0",
+  "author": {
+    "name": "Hiroshi Sampaio",
+    "url": "https://github.com/hiroshi-sampaio"
+  },
+  "license": "ISC",
   "scripts": {
-    "build": "flow-remove-types src/ -d target/"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "css:scss": "node-sass -o dist src/scss",
+    "css:autoprefixer": "postcss -u autoprefixer -r dist/*.css",
+    "css:lint": "stylelint src/scss/*.scss  --custom-syntax postcss-scss",
+    "build:css": "npm run css:lint && npm run css:scss && npm run css:autoprefixer",
+    "tsc": "tsc"
   },
-  "dependencies": {
-    "flow-remove-types": "latest"
-  },
-  "files": [
-    "!target/**/*"
-  ]
+  "devDependencies": {
+    "autoprefixer": "^10.4.7",
+    "node-sass": "^7.0.1",
+    "postcss-cli": "^9.1.0",
+    "postcss-scss": "^4.0.4",
+    "stylelint": "^14.9.1",
+    "typescript": "^4.7.3"
+  }
 }
